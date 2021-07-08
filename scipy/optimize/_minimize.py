@@ -19,7 +19,7 @@ import numpy as np
 from scipy._lib.six import callable
 
 # unconstrained minimization
-from .optimize import (_outloop_add_hessian,_minimize_add_hessian,_minimize_svrnag,_outloop_svrg,_minimize_svrg_1st,_outloop_svr_naq,_minimize_olbfgs,_minimize_olnaq,_outloop_lookahead,_lookahead_olnaq, _minimize_svr_naq,
+from .optimize import (full_grad_test,_outloop_add_hessian,_minimize_add_hessian,_minimize_svrnag,_outloop_svrg,_minimize_svrg_1st,_outloop_svr_naq,_minimize_olbfgs,_minimize_olnaq,_outloop_lookahead,_lookahead_olnaq, _minimize_svr_naq,
                        _minimize_svrg_lnaq,_minimize_svrg_2,_minimize_svrg,_minimize_onaq, _minimize_neldermead,
                        _minimize_powell, _minimize_cg,
                        _minimize_bfgs, _minimize_newtoncg,
@@ -587,6 +587,8 @@ def minimize(fun, x0, args=(), method=None, jac=None, hess=None,
         return method(fun, x0, args=args, jac=jac, hess=hess, hessp=hessp,
                       bounds=bounds, constraints=constraints,
                       callback=callback, **options)
+    elif meth == 'full_grad_test':
+        return full_grad_test(fun, x0, args, jac, callback, **options)
     elif meth == 'add_hessian':
         return _minimize_add_hessian(fun, x0, args, jac, callback, **options)
     elif meth == 'out_add_hessian':
