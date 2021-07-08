@@ -1,4 +1,4 @@
-#__docformat__ = "restructuredtext en"
+# __docformat__ = "restructuredtext en"
 # ******NOTICE***************
 # optimize.py module by Travis E. Oliphant
 #
@@ -15,7 +15,6 @@
 #      cubic-interpolation (Mar. 2004)
 
 from __future__ import division, print_function, absolute_import
-
 
 # Minimization routines
 
@@ -39,11 +38,10 @@ from .linesearch import (line_search_wolfe1, line_search_wolfe2,
                          LineSearchWarning)
 from scipy._lib._util import getargspec_no_self as _getargspec
 
-
 # standard status messages of optimizers
 _status_message = {'success': 'Optimization terminated successfully.',
                    'maxfev': 'Maximum number of function evaluations has '
-                              'been exceeded.',
+                             'been exceeded.',
                    'maxiter': 'Maximum number of iterations has been '
                               'exceeded.',
                    'pr_loss': 'Desired error not necessarily achieved due '
@@ -53,6 +51,7 @@ _status_message = {'success': 'Optimization terminated successfully.',
 class MemoizeJac(object):
     """ Decorator that caches the value gradient of function each time it
     is called. """
+
     def __init__(self, fun):
         self.fun = fun
         self.jac = None
@@ -109,6 +108,7 @@ class OptimizeResult(dict):
     with attribute accessors, one can see which attributes are available
     using the `keys()` method.
     """
+
     def __getattr__(self, name):
         try:
             return self[name]
@@ -159,7 +159,7 @@ def vecnorm(x, ord=2):
     elif ord == -Inf:
         return numpy.amin(numpy.abs(x))
     else:
-        return numpy.sum(numpy.abs(x)**ord, axis=0)**(1.0 / ord)
+        return numpy.sum(numpy.abs(x) ** ord, axis=0) ** (1.0 / ord)
 
 
 def rosen(x):
@@ -183,7 +183,7 @@ def rosen(x):
     See Also
     --------
     rosen_der, rosen_hess, rosen_hess_prod
-    
+
     Examples
     --------
     >>> from scipy.optimize import rosen
@@ -193,7 +193,7 @@ def rosen(x):
 
     """
     x = asarray(x)
-    r = numpy.sum(100.0 * (x[1:] - x[:-1]**2.0)**2.0 + (1 - x[:-1])**2.0,
+    r = numpy.sum(100.0 * (x[1:] - x[:-1] ** 2.0) ** 2.0 + (1 - x[:-1]) ** 2.0,
                   axis=0)
     return r
 
@@ -222,10 +222,10 @@ def rosen_der(x):
     xm_m1 = x[:-2]
     xm_p1 = x[2:]
     der = numpy.zeros_like(x)
-    der[1:-1] = (200 * (xm - xm_m1**2) -
-                 400 * (xm_p1 - xm**2) * xm - 2 * (1 - xm))
-    der[0] = -400 * x[0] * (x[1] - x[0]**2) - 2 * (1 - x[0])
-    der[-1] = 200 * (x[-1] - x[-2]**2)
+    der[1:-1] = (200 * (xm - xm_m1 ** 2) -
+                 400 * (xm_p1 - xm ** 2) * xm - 2 * (1 - xm))
+    der[0] = -400 * x[0] * (x[1] - x[0] ** 2) - 2 * (1 - x[0])
+    der[-1] = 200 * (x[-1] - x[-2] ** 2)
     return der
 
 
@@ -251,9 +251,9 @@ def rosen_hess(x):
     x = atleast_1d(x)
     H = numpy.diag(-400 * x[:-1], 1) - numpy.diag(400 * x[:-1], -1)
     diagonal = numpy.zeros(len(x), dtype=x.dtype)
-    diagonal[0] = 1200 * x[0]**2 - 400 * x[1] + 2
+    diagonal[0] = 1200 * x[0] ** 2 - 400 * x[1] + 2
     diagonal[-1] = 200
-    diagonal[1:-1] = 202 + 1200 * x[1:-1]**2 - 400 * x[2:]
+    diagonal[1:-1] = 202 + 1200 * x[1:-1] ** 2 - 400 * x[2:]
     H = H + numpy.diag(diagonal)
     return H
 
@@ -282,11 +282,11 @@ def rosen_hess_prod(x, p):
     """
     x = atleast_1d(x)
     Hp = numpy.zeros(len(x), dtype=x.dtype)
-    Hp[0] = (1200 * x[0]**2 - 400 * x[1] + 2) * p[0] - 400 * x[0] * p[1]
+    Hp[0] = (1200 * x[0] ** 2 - 400 * x[1] + 2) * p[0] - 400 * x[0] * p[1]
     Hp[1:-1] = (-400 * x[:-2] * p[:-2] +
-                (202 + 1200 * x[1:-1]**2 - 400 * x[2:]) * p[1:-1] -
+                (202 + 1200 * x[1:-1] ** 2 - 400 * x[2:]) * p[1:-1] -
                 400 * x[1:-1] * p[2:])
-    Hp[-1] = -400 * x[-2] * p[-2] + 200*p[-1]
+    Hp[-1] = -400 * x[-2] * p[-2] + 200 * p[-1]
     return Hp
 
 
@@ -417,7 +417,7 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None,
     if full_output:
         retlist = res['x'], res['fun'], res['nit'], res['nfev'], res['status']
         if retall:
-            retlist += (res['allvecs'], )
+            retlist += (res['allvecs'],)
         return retlist
     else:
         if retall:
@@ -498,9 +498,9 @@ def _minimize_neldermead(func, x0, args=(), callback=None,
     if adaptive:
         dim = float(len(x0))
         rho = 1
-        chi = 1 + 2/dim
-        psi = 0.75 - 1/(2*dim)
-        sigma = 1 - 1/dim
+        chi = 1 + 2 / dim
+        psi = 0.75 - 1 / (2 * dim)
+        sigma = 1 - 1 / dim
     else:
         rho = 1
         chi = 2
@@ -520,7 +520,7 @@ def _minimize_neldermead(func, x0, args=(), callback=None,
         for k in range(N):
             y = numpy.array(x0, copy=True)
             if y[k] != 0:
-                y[k] = (1 + nonzdelt)*y[k]
+                y[k] = (1 + nonzdelt) * y[k]
             else:
                 y[k] = zdelt
             sim[k + 1] = y
@@ -776,11 +776,11 @@ def check_grad(func, grad, x0, *args, **kwargs):
         raise ValueError("Unknown keyword arguments: %r" %
                          (list(kwargs.keys()),))
     return sqrt(sum((grad(x0, *args) -
-                     approx_fprime(x0, func, step, *args))**2))
+                     approx_fprime(x0, func, step, *args)) ** 2))
 
 
 def approx_fhess_p(x0, p, fprime, epsilon, *args):
-    f2 = fprime(*((x0 + epsilon*p,) + args))
+    f2 = fprime(*((x0 + epsilon * p,) + args))
     f1 = fprime(*((x0,) + args))
     return (f2 - f1) / epsilon
 
@@ -833,7 +833,40 @@ def _line_search_wolfe12(f, fprime, xk, pk, gfk, old_fval, old_old_fval,
 
     return ret
 
+
 # New Algolithm
+def full_grad_test(fun, x0, args=(), jac=None, callback=None,
+                  gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                  disp=False, return_all=False,
+                  full_grad=None,
+                  dirNorm=True,
+                  **unknown_options):
+    _check_unknown_options(unknown_options)
+    f = fun
+    fprime = jac
+    epsilon = eps
+    retall = return_all
+    if fprime is None:
+        grad_calls, myfprime = wrap_function(approx_fprime, (f, epsilon))
+    else:
+        grad_calls, myfprime = wrap_function(fprime, args)
+
+    xk = asarray(x0).flatten()
+    xk = xk.reshape(-1, 1)
+
+    gk = myfprime(xk).reshape(-1, 1)
+    full_grad.append(gk)
+
+    xkp1 = xk
+
+    if callback is not None:
+        callback(xk)
+    result = OptimizeResult(fun=0, jac=0, hess_inv=0, nfev=0,
+                            njev=0, status=0,
+                            success=(0), message=0, x=xkp1,
+                            nit=0)
+    return result
+
 def _minimize_olbfgs(fun, x0, args=(), jac=None, callback=None,
                      gtol=1e-5, norm=Inf, eps=_epsilon, maxiter=None,
                      disp=False, return_all=False, vk_vec=None, sk_vec=None, yk_vec=None,
@@ -922,6 +955,7 @@ def _minimize_olbfgs(fun, x0, args=(), jac=None, callback=None,
 
     return result
 
+
 def _minimize_olnaq(fun, x0, args=(), jac=None, callback=None,
                     gtol=1e-5, norm=Inf, eps=_epsilon, maxiter=None,
                     disp=False, return_all=False, vk_vec=None, sk_vec=None, yk_vec=None, m=8, alpha_k=1.0, muP=0.8,
@@ -959,8 +993,8 @@ def _minimize_olnaq(fun, x0, args=(), jac=None, callback=None,
         grad_calls, myfprime = wrap_function(fprime, args)
 
     k = len(sk_vec)
-    if k ==0:
-        print("Parameters: ",len(xk))
+    if k == 0:
+        print("Parameters: ", len(xk))
         vk_vec.append(np.zeros_like(xk))
 
     vk = vk_vec[0]
@@ -1009,12 +1043,14 @@ def _minimize_olnaq(fun, x0, args=(), jac=None, callback=None,
 
     return result
 
+
 def _lookahead_olnaq(fun, x0, args=(), jac=None, callback=None,
-                    gtol=1e-5, norm=Inf, eps=_epsilon, maxiter=None,
-                    disp=False, return_all=False, vk_vec=None, sk_vec=None, yk_vec=None, m=None, alpha_k=None, muP=None,
-                    alpha_slow=0.8, slow_w_save=None,
-                    dirNorm=True,
-                    **unknown_options):
+                     gtol=1e-5, norm=Inf, eps=_epsilon, maxiter=None,
+                     disp=False, return_all=False, vk_vec=None, sk_vec=None, yk_vec=None, m=None, alpha_k=None,
+                     muP=None,
+                     alpha_slow=0.8, slow_w_save=None,
+                     dirNorm=True,
+                     **unknown_options):
     '''
     Minimization of scalar function of one or more variables using the
     BFGS algorithm.
@@ -1034,7 +1070,7 @@ def _lookahead_olnaq(fun, x0, args=(), jac=None, callback=None,
     '''
 
     '''
-    
+
     '''
 
     _check_unknown_options(unknown_options)
@@ -1087,16 +1123,14 @@ def _lookahead_olnaq(fun, x0, args=(), jac=None, callback=None,
     mu = muP
     xk = asarray(x0).flatten()
 
-
     k = len(sk_vec)
-    if k ==0:
-        print("Parameters: ",len(xk))
+    if k == 0:
+        print("Parameters: ", len(xk))
         vk_vec.append(np.zeros_like(xk))
 
     vk = vk_vec[0]
 
     gfk = myfprime(xk + mu * vk)
-
 
     pk = -gfk
     a = []
@@ -1116,8 +1150,6 @@ def _lookahead_olnaq(fun, x0, args=(), jac=None, callback=None,
         b = numpy.dot(yk_vec[idx - 1 - i].T, pk) / numpy.dot(yk_vec[idx - 1 - i].T, sk_vec[idx - 1 - i])
         pk = pk + (a[i] - b) * sk_vec[idx - 1 - i]
 
-
-
     if dirNorm == True:
         pk = pk / vecnorm(pk, 2)  # direction normalization
 
@@ -1132,11 +1164,9 @@ def _lookahead_olnaq(fun, x0, args=(), jac=None, callback=None,
     yk_vec.append(yk)
     xk = xkp1
 
-
     if callback is not None:
         callback(xk)
     k += 1
-
 
     result = OptimizeResult(fun=0, jac=0, hess_inv=0, nfev=0,
                             njev=0, status=0,
@@ -1147,12 +1177,11 @@ def _lookahead_olnaq(fun, x0, args=(), jac=None, callback=None,
 
 
 def _outloop_lookahead(fun, x0, args=(), jac=None, callback=None,
-                    gtol=1e-5, norm=Inf, eps=_epsilon, maxiter=None,
-                    disp=False, return_all=False,
-                    alpha_k=0.8, slow_w_save=None,
-                    dirNorm=True,
-                    **unknown_options):
-
+                       gtol=1e-5, norm=Inf, eps=_epsilon, maxiter=None,
+                       disp=False, return_all=False,
+                       alpha_k=0.8, slow_w_save=None,
+                       dirNorm=True,
+                       **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1172,24 +1201,24 @@ def _outloop_lookahead(fun, x0, args=(), jac=None, callback=None,
     # パラメータの整形
     xk = asarray(x0).flatten()
 
-    #パラメータ数表示
+    # パラメータ数表示
     k = len(slow_w_save)
-    if k ==0:
-        print("Parameters: ",len(xk))
+    if k == 0:
+        print("Parameters: ", len(xk))
         slow_w_save.append(xk)
 
 
     else:
-        #高速の重みに重みを代入
+        # 高速の重みに重みを代入
         fast_w = xk
         fast_w = fast_w.reshape(-1, 1)
 
-        #低速の重みを更新
+        # 低速の重みを更新
         slow_w = asarray(slow_w_save).flatten()
         slow_w = slow_w.reshape(-1, 1)
         slow_w = slow_w + alpha_k * (fast_w - slow_w)
 
-        #高速の重みに代入
+        # 高速の重みに代入
         fast_w = slow_w
         xk = fast_w
         slow_w_save.append(xk)
@@ -1198,7 +1227,6 @@ def _outloop_lookahead(fun, x0, args=(), jac=None, callback=None,
         callback(xk)
     k += 1
 
-
     result = OptimizeResult(fun=0, jac=0, hess_inv=0, nfev=0,
                             njev=0, status=0,
                             success=(0), message=0, x=xk,
@@ -1206,13 +1234,13 @@ def _outloop_lookahead(fun, x0, args=(), jac=None, callback=None,
 
     return result
 
-def _outloop_svrg(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   omega_vec=None,wt_vec=None,
-                   dirNorm=True,
-                   **unknown_options):
 
+def _outloop_svrg(fun, x0, args=(), jac=None, callback=None,
+                  gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                  disp=False, return_all=False,
+                  omega_vec=None, wt_vec=None,
+                  dirNorm=True,
+                  **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1238,13 +1266,13 @@ def _outloop_svrg(fun, x0, args=(), jac=None, callback=None,
                             nit=0)
     return result
 
-def _minimize_svrnag(fun, x0, args=(), jac=None, callback=None,
-                       gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                       disp=False, return_all=False,
-                       omega_vec=None,wt_vec=None,vk_vec=None,alpha_k=None,muP=None,
-                       dirNorm=True,
-                       **unknown_options):
 
+def _minimize_svrnag(fun, x0, args=(), jac=None, callback=None,
+                     gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                     disp=False, return_all=False,
+                     omega_vec=None, wt_vec=None, vk_vec=None, alpha_k=None, muP=None,
+                     dirNorm=True,
+                     **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1266,19 +1294,17 @@ def _minimize_svrnag(fun, x0, args=(), jac=None, callback=None,
     xk = xk.reshape(-1, 1)
 
     omega = asarray(omega_vec).flatten()
-    omega = omega.reshape(-1, 1)#Full Gradient
+    omega = omega.reshape(-1, 1)  # Full Gradient
 
     wt = asarray(wt_vec).flatten()
     wt = wt.reshape(-1, 1)
 
-    gk = myfprime(xk).reshape(-1,1)
-    gw = myfprime(wt).reshape(-1,1)
+    gk = myfprime(xk).reshape(-1, 1)
+    gw = myfprime(wt).reshape(-1, 1)
 
     pk = gk - gw + omega
     vkp1 = alpha_k * pk
-    xkp1 = xk + muP*vt_vec - vkp1
-
-
+    xkp1 = xk + muP * vt_vec - vkp1
 
     if callback is not None:
         callback(xk)
@@ -1288,13 +1314,13 @@ def _minimize_svrnag(fun, x0, args=(), jac=None, callback=None,
                             nit=0)
     return result
 
+
 def _minimize_svrg_1st(fun, x0, args=(), jac=None, callback=None,
                        gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
                        disp=False, return_all=False,
-                       omega_vec=None,wt_vec=None,alpha_k=None,
+                       omega_vec=None, wt_vec=None, alpha_k=None,
                        dirNorm=True,
                        **unknown_options):
-
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1309,19 +1335,17 @@ def _minimize_svrg_1st(fun, x0, args=(), jac=None, callback=None,
     xk = xk.reshape(-1, 1)
 
     omega = asarray(omega_vec).flatten()
-    omega = omega.reshape(-1, 1)#Full Gradient
+    omega = omega.reshape(-1, 1)  # Full Gradient
 
     wt = asarray(wt_vec).flatten()
     wt = wt.reshape(-1, 1)
 
-    gk = myfprime(xk).reshape(-1,1)
-    gw = myfprime(wt).reshape(-1,1)
+    gk = myfprime(xk).reshape(-1, 1)
+    gw = myfprime(wt).reshape(-1, 1)
 
     pk = gk - gw + omega
     vkp1 = alpha_k * pk
     xkp1 = xk - vkp1
-
-
 
     if callback is not None:
         callback(xk)
@@ -1331,13 +1355,13 @@ def _minimize_svrg_1st(fun, x0, args=(), jac=None, callback=None,
                             nit=0)
     return result
 
-def _outloop_svr_naq(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   omega_vec=None,wt_vec=None,sk_vec=None,yk_vec=None,vk_vec=None,muP=None,
-                   dirNorm=True,
-                   **unknown_options):
 
+def _outloop_svr_naq(fun, x0, args=(), jac=None, callback=None,
+                     gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                     disp=False, return_all=False,
+                     omega_vec=None, wt_vec=None, sk_vec=None, yk_vec=None, vk_vec=None, muP=None,
+                     dirNorm=True,
+                     **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1369,7 +1393,7 @@ def _outloop_svr_naq(fun, x0, args=(), jac=None, callback=None,
     wt_1 = wt
     n_params = wt_1 + mom * V
 
-    n_grads = myfprime(n_params).reshape(-1,1)
+    n_grads = myfprime(n_params).reshape(-1, 1)
 
     wt = xk
     wt_vec.append(wt)
@@ -1403,14 +1427,14 @@ def _outloop_svr_naq(fun, x0, args=(), jac=None, callback=None,
                             nit=0)
     return result
 
-def _outloop_add_hessian(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   omega_vec=None,wt_vec=None,
-                   sk_vec=None,yk_vec=None,xP_vec=None,
-                   dirNorm=True,
-                   **unknown_options):
 
+def _outloop_add_hessian(fun, x0, args=(), jac=None, callback=None,
+                         gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                         disp=False, return_all=False,
+                         omega_vec=None, wt_vec=None,
+                         sk_vec=None, yk_vec=None, xP_vec=None,
+                         dirNorm=True,
+                         **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1431,7 +1455,7 @@ def _outloop_add_hessian(fun, x0, args=(), jac=None, callback=None,
     wt = wt.reshape(-1, 1)
 
     n_params = wt
-    n_grads = myfprime(n_params).reshape(-1,1)
+    n_grads = myfprime(n_params).reshape(-1, 1)
 
     wt = xk
     wt_vec.append(wt)
@@ -1466,13 +1490,14 @@ def _outloop_add_hessian(fun, x0, args=(), jac=None, callback=None,
                             nit=0)
     return result
 
+
 def _minimize_add_hessian(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   m=None, c=None,
-                   sk_vec=None, yk_vec=None,xP_vec=None,
-                   dirNorm=True,
-                   **unknown_options):
+                          gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                          disp=False, return_all=False,
+                          m=None, c=None,
+                          sk_vec=None, yk_vec=None, xP_vec=None,
+                          dirNorm=True,
+                          **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1526,14 +1551,13 @@ def _minimize_add_hessian(fun, x0, args=(), jac=None, callback=None,
 
 
 def _minimize_svr_naq(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   alpha_k=None, omega_vec=None,wt_vec=None,
-                   m=None, c=None, sk_vec=None, yk_vec=None,
-                   muP=None, vk_vec=None,H_vec=None,save_norm=None,
-                   dirNorm=True,
-                   **unknown_options):
-
+                      gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                      disp=False, return_all=False,
+                      alpha_k=None, omega_vec=None, wt_vec=None,
+                      m=None, c=None, sk_vec=None, yk_vec=None,
+                      muP=None, vk_vec=None, H_vec=None, save_norm=None,
+                      dirNorm=True,
+                      **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1572,15 +1596,15 @@ def _minimize_svr_naq(fun, x0, args=(), jac=None, callback=None,
 
     '''
     save |pk|
-    '''
+
     g_norm = np.amax(np.abs(pk))
     save_norm.append(g_norm)
-
-    sk_1 = sk_vec[min(k_iter - 1, mem)]#sk_vec[-1]
+    '''
+    sk_1 = sk_vec[min(k_iter - 1, mem)]  # sk_vec[-1]
     yk_1 = yk_vec[min(k_iter - 1, mem)]
 
     if c[0] == 1:
-        #lmited memory BFGS
+        # lmited memory BFGS
         # compute H
         H = np.dot(sk_1.T, yk_1) / np.dot(yk_1.T, yk_1)
 
@@ -1603,27 +1627,25 @@ def _minimize_svr_naq(fun, x0, args=(), jac=None, callback=None,
         rk = pk
 
         vkp1 = mom * vk - alpha_k * rk
-    else :
+    else:
         # BFGS
         if len(H_vec) == 0:
             H = np.eye(len(xk))
         else:
-            H = asarray(H_vec).reshape(-1,len(xk))
+            H = asarray(H_vec).reshape(-1, len(xk))
 
-        a_dot = np.dot(H,yk_1)
+        a_dot = np.dot(H, yk_1)
         b_dot = np.dot(yk_1.T, H)
         c_dot = np.dot(sk_1.T, yk_1)
-        d_dot = np.dot(sk_1,sk_1.T)
+        d_dot = np.dot(sk_1, sk_1.T)
 
         e_dot = (np.dot(a_dot, sk_1.T) + np.dot(sk_1, a_dot.T)) / c_dot
-        f_dot = (1 + np.dot(b_dot, yk_1)/c_dot) * d_dot/c_dot
+        f_dot = (1 + np.dot(b_dot, yk_1) / c_dot) * d_dot / c_dot
 
         H = H - e_dot + f_dot
 
         H_vec.append(H)
         vkp1 = mom * vk - alpha_k * np.dot(H, pk)
-
-
 
     vk_vec.append(vkp1)
     xkp1 = xk + vkp1
@@ -1637,14 +1659,13 @@ def _minimize_svr_naq(fun, x0, args=(), jac=None, callback=None,
 
 
 def _minimize_svrg_lnaq(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   alpha_k=None, fg=None,pa=None,
-                   m=None, k=None, sk_vec=None, yk_vec=None,
-                   mom=None, vk_vec=None,
-                   dirNorm=True,
-                   **unknown_options):
-
+                        gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                        disp=False, return_all=False,
+                        alpha_k=None, fg=None, pa=None,
+                        m=None, k=None, sk_vec=None, yk_vec=None,
+                        mom=None, vk_vec=None,
+                        dirNorm=True,
+                        **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1658,29 +1679,28 @@ def _minimize_svrg_lnaq(fun, x0, args=(), jac=None, callback=None,
         grad_calls, myfprime = wrap_function(approx_fprime, (f, epsilon))
     else:
         grad_calls, myfprime = wrap_function(fprime, args)
-    #momentum term
-    #mo = asarray(mom).flatten()
-    #mo = mo.reshape(-1, 1)
-    if len(vk_vec)==0:
+    # momentum term
+    # mo = asarray(mom).flatten()
+    # mo = mo.reshape(-1, 1)
+    if len(vk_vec) == 0:
         vk = np.zeros_like(xk)
     else:
         vk = asarray(vk_vec).flatten()
         vk = vk.reshape(-1, 1)
 
-    #setting full_grads and w_wave
+    # setting full_grads and w_wave
     fg = asarray(fg).flatten()
     mu = fg.reshape(-1, 1)  # Full Gradient
 
     pa = asarray(pa).flatten()
     w_wave = pa.reshape(-1, 1)
 
-    #compute H
-    sk_1 = sk_vec[min(k_iter-1,mem)]
-    yk_1 = yk_vec[min(k_iter-1,mem)]
+    # compute H
+    sk_1 = sk_vec[min(k_iter - 1, mem)]
+    yk_1 = yk_vec[min(k_iter - 1, mem)]
     H = np.dot(sk_1.T, yk_1) / np.dot(yk_1.T, yk_1)
 
-
-    #getting grads
+    # getting grads
     gk = myfprime(xk + mom * vk).reshape(-1, 1)
     gw = myfprime(w_wave).reshape(-1, 1)
 
@@ -1702,7 +1722,7 @@ def _minimize_svrg_lnaq(fun, x0, args=(), jac=None, callback=None,
     for i in reversed(range(min(k_iter, mem))):
         b = numpy.dot(yk_vec[idx - 1 - i].T, pk) / numpy.dot(yk_vec[idx - 1 - i].T, sk_vec[idx - 1 - i])
         pk = pk + (a[i] - b) * sk_vec[idx - 1 - i]
-    rk =  pk
+    rk = pk
     '''
     #Armijo
     eta = 1e-3
@@ -1734,14 +1754,14 @@ def _minimize_svrg_lnaq(fun, x0, args=(), jac=None, callback=None,
 
     return result
 
-def _minimize_svrg_2(fun, x0, args=(), jac=None, callback=None,
-                   gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
-                   disp=False, return_all=False,
-                   alpha_k=None, fg=None,pa=None,
-                   m=None, k=None, sk_vec=None, yk_vec=None,
-                   dirNorm=True,
-                   **unknown_options):
 
+def _minimize_svrg_2(fun, x0, args=(), jac=None, callback=None,
+                     gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
+                     disp=False, return_all=False,
+                     alpha_k=None, fg=None, pa=None,
+                     m=None, k=None, sk_vec=None, yk_vec=None,
+                     dirNorm=True,
+                     **unknown_options):
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1756,20 +1776,19 @@ def _minimize_svrg_2(fun, x0, args=(), jac=None, callback=None,
     else:
         grad_calls, myfprime = wrap_function(fprime, args)
 
-    #setting full_grads and w_wave
+    # setting full_grads and w_wave
     fg = asarray(fg).flatten()
     mu = fg.reshape(-1, 1)  # Full Gradient
 
     pa = asarray(pa).flatten()
     w_wave = pa.reshape(-1, 1)
 
-    #compute H
-    sk_1 = sk_vec[min(k_iter-1,mem)]
-    yk_1 = yk_vec[min(k_iter-1,mem)]
+    # compute H
+    sk_1 = sk_vec[min(k_iter - 1, mem)]
+    yk_1 = yk_vec[min(k_iter - 1, mem)]
     H = np.dot(sk_1.T, yk_1) / np.dot(yk_1.T, yk_1)
 
-
-    #getting grads
+    # getting grads
     gk = myfprime(xk).reshape(-1, 1)
     gw = myfprime(w_wave).reshape(-1, 1)
 
@@ -1791,7 +1810,7 @@ def _minimize_svrg_2(fun, x0, args=(), jac=None, callback=None,
     for i in reversed(range(min(k_iter, mem))):
         b = numpy.dot(yk_vec[idx - 1 - i].T, pk) / numpy.dot(yk_vec[idx - 1 - i].T, sk_vec[idx - 1 - i])
         pk = pk + (a[i] - b) * sk_vec[idx - 1 - i]
-    rk =  pk
+    rk = pk
     '''
     a = []
 
@@ -1822,13 +1841,13 @@ def _minimize_svrg_2(fun, x0, args=(), jac=None, callback=None,
 
     return result
 
+
 def _minimize_svrg(fun, x0, args=(), jac=None, callback=None,
                    gtol=1e-6, norm=Inf, eps=_epsilon, maxiter=None,
                    disp=False, return_all=False,
-                   alpha_k=None, fg=None,m=None,pa=None,
+                   alpha_k=None, fg=None, m=None, pa=None,
                    dirNorm=True,
                    **unknown_options):
-
     _check_unknown_options(unknown_options)
     f = fun
     fprime = jac
@@ -1842,19 +1861,17 @@ def _minimize_svrg(fun, x0, args=(), jac=None, callback=None,
         grad_calls, myfprime = wrap_function(fprime, args)
 
     mu = asarray(fg).flatten()
-    mu = mu.reshape(-1, 1)#Full Gradient
+    mu = mu.reshape(-1, 1)  # Full Gradient
 
     w_wave = asarray(pa).flatten()
     w_wave = w_wave.reshape(-1, 1)
 
-    gk = myfprime(xk).reshape(-1,1)
-    gw = myfprime(w_wave).reshape(-1,1)
+    gk = myfprime(xk).reshape(-1, 1)
+    gw = myfprime(w_wave).reshape(-1, 1)
 
     pk = gk - gw + mu
     vkp1 = alpha_k[0] * pk
     xkp1 = xk - vkp1
-
-
 
     if callback is not None:
         callback(xk)
@@ -1863,6 +1880,7 @@ def _minimize_svrg(fun, x0, args=(), jac=None, callback=None,
                             success=(0), message=0, x=xkp1,
                             nit=0)
     return result
+
 
 '''
 def _minimize_svrg(fun, x0, args=(), jac=None, callback=None,
@@ -2015,11 +2033,9 @@ def _minimize_onaq(fun, x0, args=(), jac=None, callback=None,
                             njev=0, status=0,
                             success=(0), message=0, x=xkp1,
                             nit=k)
-    #if retall:
+    # if retall:
     #    result['allvecs'] = allvecs
     return result
-
-
 
 
 def fmin_bfgs(f, x0, fprime=None, args=(), gtol=1e-5, norm=Inf,
@@ -2107,7 +2123,7 @@ def fmin_bfgs(f, x0, fprime=None, args=(), gtol=1e-5, norm=Inf,
         retlist = (res['x'], res['fun'], res['jac'], res['hess_inv'],
                    res['nfev'], res['njev'], res['status'])
         if retall:
-            retlist += (res['allvecs'], )
+            retlist += (res['allvecs'],)
         return retlist
     else:
         if retall:
@@ -2174,8 +2190,8 @@ def _minimize_bfgs(fun, x0, args=(), jac=None, callback=None,
         pk = -numpy.dot(Hk, gfk)
         try:
             alpha_k, fc, gc, old_fval, old_old_fval, gfkp1 = \
-                     _line_search_wolfe12(f, myfprime, xk, pk, gfk,
-                                          old_fval, old_old_fval, amin=1e-100, amax=1e100)
+                _line_search_wolfe12(f, myfprime, xk, pk, gfk,
+                                     old_fval, old_old_fval, amin=1e-100, amax=1e100)
         except _LineSearchError:
             # Line search failed to find a better solution.
             warnflag = 2
@@ -2411,7 +2427,7 @@ def fmin_cg(f, x0, fprime=None, args=(), gtol=1e-5, norm=Inf, epsilon=_epsilon,
     if full_output:
         retlist = res['x'], res['fun'], res['nfev'], res['njev'], res['status']
         if retall:
-            retlist += (res['allvecs'], )
+            retlist += (res['allvecs'],)
         return retlist
     else:
         if retall:
@@ -2507,9 +2523,9 @@ def _minimize_cg(fun, x0, args=(), jac=None, callback=None,
 
         try:
             alpha_k, fc, gc, old_fval, old_old_fval, gfkp1 = \
-                     _line_search_wolfe12(f, myfprime, xk, pk, gfk, old_fval,
-                                          old_old_fval, c2=0.4, amin=1e-100, amax=1e100,
-                                          extra_condition=descent_condition)
+                _line_search_wolfe12(f, myfprime, xk, pk, gfk, old_fval,
+                                     old_old_fval, c2=0.4, amin=1e-100, amax=1e100,
+                                     extra_condition=descent_condition)
         except _LineSearchError:
             # Line search failed to find a better solution.
             warnflag = 2
@@ -2654,7 +2670,7 @@ def fmin_ncg(f, x0, fprime, fhess_p=None, fhess=None, args=(), avextol=1e-5,
         retlist = (res['x'], res['fun'], res['nfev'], res['njev'],
                    res['nhev'], res['status'])
         if retall:
-            retlist += (res['allvecs'], )
+            retlist += (res['allvecs'],)
         return retlist
     else:
         if retall:
@@ -2719,8 +2735,8 @@ def _minimize_newtoncg(fun, x0, args=(), jac=None, hess=None, hessp=None,
     gcalls, fprime = wrap_function(fprime, args)
     hcalls = 0
     if maxiter is None:
-        maxiter = len(x0)*200
-    cg_maxiter = 20*len(x0)
+        maxiter = len(x0) * 200
+    cg_maxiter = 20 * len(x0)
 
     xtol = len(x0) * avextol
     update = [2 * xtol]
@@ -2748,7 +2764,7 @@ def _minimize_newtoncg(fun, x0, args=(), jac=None, hess=None, hessp=None,
         i = 0
         dri0 = numpy.dot(ri, ri)
 
-        if fhess is not None:             # you want to compute hessian once.
+        if fhess is not None:  # you want to compute hessian once.
             A = fhess(*(xk,) + args)
             hcalls = hcalls + 1
 
@@ -2782,7 +2798,7 @@ def _minimize_newtoncg(fun, x0, args=(), jac=None, hess=None, hessp=None,
             betai = dri1 / dri0
             psupi = -ri + betai * psupi
             i = i + 1
-            dri0 = dri1          # update numpy.dot(ri,ri) for next time.
+            dri0 = dri1  # update numpy.dot(ri,ri) for next time.
         else:
             # curvature keeps increasing, bail out
             msg = ("Warning: CG iterations didn't converge.  The Hessian is not "
@@ -2790,19 +2806,19 @@ def _minimize_newtoncg(fun, x0, args=(), jac=None, hess=None, hessp=None,
             return terminate(3, msg)
 
         pk = xsupi  # search direction is solution to system.
-        gfk = -b    # gradient at xk
+        gfk = -b  # gradient at xk
 
         try:
             alphak, fc, gc, old_fval, old_old_fval, gfkp1 = \
-                     _line_search_wolfe12(f, fprime, xk, pk, gfk,
-                                          old_fval, old_old_fval)
+                _line_search_wolfe12(f, fprime, xk, pk, gfk,
+                                     old_fval, old_old_fval)
         except _LineSearchError:
             # Line search failed to find a better solution.
             msg = "Warning: " + _status_message['pr_loss']
             return terminate(2, msg)
 
         update = alphak * pk
-        xk = xk + update        # upcast if necessary
+        xk = xk + update  # upcast if necessary
         if callback is not None:
             callback(xk)
         if retall:
@@ -2963,7 +2979,7 @@ def _minimize_scalar_bounded(func, bounds, args=(),
             e = rat
 
             # Check for acceptability of parabola
-            if ((numpy.abs(p) < numpy.abs(0.5*q*r)) and (p > q*(a - xf)) and
+            if ((numpy.abs(p) < numpy.abs(0.5 * q * r)) and (p > q * (a - xf)) and
                     (p < q * (b - xf))):
                 rat = (p + 0.0) / q
                 x = xf + rat
@@ -2972,7 +2988,7 @@ def _minimize_scalar_bounded(func, bounds, args=(),
                 if ((x - a) < tol2) or ((b - x) < tol2):
                     si = numpy.sign(xm - xf) + ((xm - xf) == 0)
                     rat = tol1 * si
-            else:      # do a golden section step
+            else:  # do a golden section step
                 golden = 1
 
         if golden:  # Do a golden-section step
@@ -2980,7 +2996,7 @@ def _minimize_scalar_bounded(func, bounds, args=(),
                 e = a - xf
             else:
                 e = b - xf
-            rat = golden_mean*e
+            rat = golden_mean * e
             step = '       golden'
 
         si = numpy.sign(rat) + (rat == 0)
@@ -3032,7 +3048,7 @@ def _minimize_scalar_bounded(func, bounds, args=(),
 
 
 class Brent:
-    #need to rethink design of __init__
+    # need to rethink design of __init__
     def __init__(self, func, args=(), tol=1.48e-8, maxiter=500,
                  full_output=0):
         self.func = func
@@ -3051,7 +3067,7 @@ class Brent:
         self.brack = brack
 
     def get_bracket_info(self):
-        #set up
+        # set up
         func = self.func
         args = self.args
         brack = self.brack
@@ -3088,7 +3104,7 @@ class Brent:
         _mintol = self._mintol
         _cg = self._cg
         #################################
-        #BEGIN CORE ALGORITHM
+        # BEGIN CORE ALGORITHM
         #################################
         x = w = v = xb
         fw = fv = fx = func(*((x,) + self.args))
@@ -3113,11 +3129,11 @@ class Brent:
             # (gh-4140). It should be set before the if (but to what?).
             if (numpy.abs(deltax) <= tol1):
                 if (x >= xmid):
-                    deltax = a - x       # do a golden section step
+                    deltax = a - x  # do a golden section step
                 else:
                     deltax = b - x
                 rat = _cg * deltax
-            else:                              # do a parabolic step
+            else:  # do a parabolic step
                 tmp1 = (x - w) * (fx - fv)
                 tmp2 = (x - v) * (fx - fw)
                 p = (x - v) * tmp2 - (x - w) * tmp1
@@ -3130,7 +3146,7 @@ class Brent:
                 # check parabolic fit
                 if ((p > tmp2 * (a - x)) and (p < tmp2 * (b - x)) and
                         (numpy.abs(p) < numpy.abs(0.5 * tmp2 * dx_temp))):
-                    rat = p * 1.0 / tmp2        # if parabolic step is useful.
+                    rat = p * 1.0 / tmp2  # if parabolic step is useful.
                     u = x + rat
                     if ((u - a) < tol2 or (b - u) < tol2):
                         if xmid - x >= 0:
@@ -3144,17 +3160,17 @@ class Brent:
                         deltax = b - x
                     rat = _cg * deltax
 
-            if (numpy.abs(rat) < tol1):            # update by at least tol1
+            if (numpy.abs(rat) < tol1):  # update by at least tol1
                 if rat >= 0:
                     u = x + tol1
                 else:
                     u = x - tol1
             else:
                 u = x + rat
-            fu = func(*((u,) + self.args))      # calculate new output value
+            fu = func(*((u,) + self.args))  # calculate new output value
             funcalls += 1
 
-            if (fu > fx):                 # if it's bigger than current
+            if (fu > fx):  # if it's bigger than current
                 if (u < x):
                     a = u
                 else:
@@ -3181,7 +3197,7 @@ class Brent:
 
             iter += 1
         #################################
-        #END CORE ALGORITHM
+        # END CORE ALGORITHM
         #################################
 
         self.xmin = x
@@ -3485,7 +3501,7 @@ def bracket(func, xa=0.0, xb=1.0, args=(), grow_limit=110.0, maxiter=1000):
     _verysmall_num = 1e-21
     fa = func(*(xa,) + args)
     fb = func(*(xb,) + args)
-    if (fa < fb):                      # Switch so fa > fb
+    if (fa < fb):  # Switch so fa > fb
         xa, xb = xb, xa
         fa, fb = fb, fa
     xc = xb + _gold * (xb - xa)
@@ -3521,11 +3537,11 @@ def bracket(func, xa=0.0, xb=1.0, args=(), grow_limit=110.0, maxiter=1000):
             w = xc + _gold * (xc - xb)
             fw = func(*((w,) + args))
             funcalls += 1
-        elif (w - wlim)*(wlim - xc) >= 0.0:
+        elif (w - wlim) * (wlim - xc) >= 0.0:
             w = wlim
             fw = func(*((w,) + args))
             funcalls += 1
-        elif (w - wlim)*(xc - w) > 0.0:
+        elif (w - wlim) * (xc - w) > 0.0:
             fw = func(*((w,) + args))
             funcalls += 1
             if (fw < fc):
@@ -3555,10 +3571,12 @@ def _linesearch_powell(func, p, xi, tol=1e-3):
     Find the minimium of the function ``func(x0+ alpha*direc)``.
 
     """
+
     def myfunc(alpha):
-        return func(p + alpha*xi)
+        return func(p + alpha * xi)
+
     alpha_min, fret, iter, num = brent(myfunc, full_output=1, tol=tol)
-    xi = alpha_min*xi
+    xi = alpha_min * xi
     return squeeze(fret), p + xi, xi
 
 
@@ -3685,7 +3703,7 @@ def fmin_powell(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None,
         retlist = (res['x'], res['fun'], res['direc'], res['nit'],
                    res['nfev'], res['status'])
         if retall:
-            retlist += (res['allvecs'], )
+            retlist += (res['allvecs'],)
         return retlist
     else:
         if retall:
@@ -3783,19 +3801,19 @@ def _minimize_powell(func, x0, args=(), callback=None,
 
         # Construct the extrapolated point
         direc1 = x - x1
-        x2 = 2*x - x1
+        x2 = 2 * x - x1
         x1 = x.copy()
         fx2 = squeeze(func(x2))
 
         if (fx > fx2):
-            t = 2.0*(fx + fx2 - 2.0*fval)
+            t = 2.0 * (fx + fx2 - 2.0 * fval)
             temp = (fx - fval - delta)
-            t *= temp*temp
+            t *= temp * temp
             temp = fx - fx2
-            t -= delta*temp*temp
+            t -= delta * temp * temp
             if t < 0.0:
                 fval, x, direc1 = _linesearch_powell(func, x, direc1,
-                                                     tol=xtol*100)
+                                                     tol=xtol * 100)
                 direc[bigind] = direc[-1]
                 direc[-1] = direc1
 
@@ -4227,7 +4245,7 @@ def show_options(solver=None, method=None, disp=True):
         if method is None:
             text = []
             for name, _ in doc_routines[solver]:
-                text.extend(["\n\n" + name, "\n" + "="*len(name) + "\n\n"])
+                text.extend(["\n\n" + name, "\n" + "=" * len(name) + "\n\n"])
                 text.append(show_options(solver, name, disp=False))
             text = "".join(text)
         else:
